@@ -1,5 +1,5 @@
 import json
-import pandas as pd
+import csv
 import boto3
 import psycopg
 
@@ -26,10 +26,10 @@ sess = boto3.Session(profile_name=PROFILE, region_name=REGION)
 
 # Read CSV file
 def read_csv(file_name):
-    df = pd.read_csv(file_name)
-    dicts = df.to_dict(orient='records')
-    print("CSV READ")
-    return dicts
+    with open(file_name, mode='r') as csvfile:
+        csv_reader = csv.DictReader(csvfile)
+        data = [row for row in csv_reader]
+    return data
 
 # Function to split data into chunks
 def chunk_data(data, chunk_size):
