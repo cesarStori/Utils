@@ -26,7 +26,7 @@ sess = boto3.Session(profile_name=PROFILE, region_name=REGION)
 
 # Read CSV file
 def read_csv(file_name):
-    with open(file_name, mode='r') as csvfile:
+    with open(file_name, mode='r', encoding='utf-8-sig') as csvfile:
         csv_reader = csv.DictReader(csvfile)
         data = [row for row in csv_reader]
     return data
