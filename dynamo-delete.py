@@ -2,7 +2,7 @@ import csv
 import boto3
 
 ENV = "dev"
-CSV_FILE = "./batch.csv"
+CSV_FILE = "./dictum_delete.csv"
 FAILED_CSV = "./failure.csv"
 DICTUM_TABLE = "fraud-disputes-letters-v2"
 CHUNK_SIZE = 25
@@ -16,7 +16,7 @@ table = dynamodb.Table(DICTUM_TABLE)
 
 # Read CSV file
 def read_csv(file_name):
-    with open(file_name, mode='r') as csvfile:
+    with open(file_name, mode='r', encoding='utf-8-sig') as csvfile:
         csv_reader = csv.DictReader(csvfile)
         data = [row for row in csv_reader]
     return data
@@ -30,9 +30,7 @@ def chunk_data(data, chunk_size):
 def batch_delete_items(table_name, data):
     failed_deletes = []
     for chunk in chunk_data(data, CHUNK_SIZE):
-        delete_requests = [{
-            'DeleteRequest': {'Key': {"ticket_number": int(item['dictum_num'])}}
-        } for item in chunk]
+        delete_requests = [{'DeleteRequest': {'Key': {"ticket_number": int(item['dictum_num'])}}} for item in chunk]
         request_items = {table_name: delete_requests}
         
         try:
